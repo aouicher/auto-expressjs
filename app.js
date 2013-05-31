@@ -10,7 +10,7 @@ var express = require('express')
   , path = require('path');
 
 var app = express();
-
+var appDir = '/auto';
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
@@ -22,16 +22,16 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
 app.use(app.router);
-  app.use(require('stylus').middleware(__dirname + '/public'));
-app.use(express.static(path.join(__dirname, 'public')));
+  app.use(appDir, require('stylus').middleware(__dirname + '/public'));
+app.use(appDir, express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/auto', routes.index);
-app.get('/users', user.list);
+app.get(appDir + '/', routes.index);
+app.get(appDir + '/users', user.list);
 
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
