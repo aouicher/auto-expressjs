@@ -36,7 +36,7 @@ var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-io = require('socket.io').listen(server,{ resource : 'auto/socket.io', origins: '*:*' });
+io = require('socket.io').listen(server,{ resource : '/auto/socket.io', origins: '*:*' });
 
 io.sockets.on('connection', function (socket) {
     //socket.emit('message', { message: 'welcome to the chat' });
