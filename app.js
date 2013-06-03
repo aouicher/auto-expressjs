@@ -32,6 +32,16 @@ if ('development' == app.get('env')) {
 app.get('/auto', routes.index);
 app.get('/auto/users', user.list);
 
+
+var rooms = [];
+
+function room(roomSocket, roomId){
+    this.roomSocket = roomSocket;
+    this.roomId = roomId;
+    this.mobileSockets = [];
+};
+
+
 var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
@@ -39,9 +49,21 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 io = require('socket.io').listen(server,{ resource : '/auto/socket.io', origins: '*:*' });
 
 io.sockets.on('connection', function (socket) {
-    //socket.emit('message', { message: 'welcome to the chat' });
-    socket.on('send', function (data) {
-        io.sockets.emit('direction', data);
-        console.log(data);
+
+    socket.on('room', function(data) {
+        socket.join(data);
+        console.log("socket ID  : "+socket.id);
+        console.log("Room ID  : "+data);
     });
+
+
+    socket.on('send', function (data) {
+
+        io.sockets.in(data.room).emit('direction', data);
+    });
+
+    socket.on("connect mobile", function(data){
+        io.sockets.in(data.room).emit('add user', data);
+ });
+
 });
