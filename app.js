@@ -47,6 +47,7 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 });
 
 io = require('socket.io').listen(server,{ resource : '/auto/socket.io', origins: '*:*' });
+io.set('transports','htmlfile');
 
 io.sockets.on('connection', function (socket) {
 
